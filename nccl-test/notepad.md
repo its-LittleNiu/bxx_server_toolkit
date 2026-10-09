@@ -48,6 +48,6 @@ export LD_LIBRARY_PATH=/usr/local/cuda-13.1/lib64:/usr/lib/x86_64-linux-gnu/open
   -np 16 -N 8 \
   -H 192.168.161.202:8,192.168.161.203:8 \
   ./sendrecv_perf_mpi \
-  -b 32G -e 32G -f 0 -i 0 -g 1 \
+  -b 32G -e 32G -f 2 -i 0 -g 1 \
   -w 8 -n 20 -c 1 -T 600 -R 2
 ```
