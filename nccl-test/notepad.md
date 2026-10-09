@@ -1,5 +1,12 @@
 ### all_reduce
 
+同leaf
+测试条件：all_reduce_perf -b 32G  -e 32G -f 0 -i 0 -g 1
+测试结果：busbw 4小时稳定不低于900GB/s
+跨leaf
+测试条件：all_reduce_perf -b 32G  -e 32G -f 0 -i 0 -g 1
+测试结果：busbw 4小时稳定不低于890GB/s
+
 ```text
 export LD_LIBRARY_PATH=/usr/local/cuda-13.1/lib64:/usr/lib/x86_64-linux-gnu/openmpi/lib:/usr/lib/x86_64-linux-gnu
 
@@ -28,6 +35,14 @@ export LD_LIBRARY_PATH=/usr/local/cuda-13.1/lib64:/usr/lib/x86_64-linux-gnu/open
 ```
 
 ### sendrecv_perf_mpi
+
+同leaf
+测试条件：sendrecv_perf -b 32G  -e 32G -f 0 -i 0 -g 1
+测试结果：busbw 4小时稳定不低于98GB/s
+跨leaf
+测试条件：sendrecv_perf -b 32G  -e 32G -f 0 -i 0 -g 1
+测试结果：busbw 4小时稳定不低于90GB/s
+
 ```text
 /usr/bin/mpirun --bind-to none \
   --launch-agent "env LD_LIBRARY_PATH=$LD_LIBRARY_PATH /usr/bin/orted" \
@@ -53,6 +68,14 @@ export LD_LIBRARY_PATH=/usr/local/cuda-13.1/lib64:/usr/lib/x86_64-linux-gnu/open
 ```
 
 ### alltoall
+
+同leaf
+测试条件：alltoall_perf -b 32G  -e 32G -f 0 -i 0 -g 1
+测试结果：busbw 4小时稳定不低于165GB/s
+跨leaf
+测试条件：alltoall_perf -b 32G  -e 32G -f 0 -i 0 -g 1
+测试结果：busbw 4小时稳定不低于160GB/s
+
 ```text
 export LD_LIBRARY_PATH=/usr/local/cuda-13.1/lib64:/usr/lib/x86_64-linux-gnu/openmpi/lib:/usr/lib/x86_64-linux-gnu
 
@@ -81,6 +104,14 @@ export LD_LIBRARY_PATH=/usr/local/cuda-13.1/lib64:/usr/lib/x86_64-linux-gnu/open
 ```
 
 ### reduce_scatter_perf
+
+同leaf
+测试条件：reduce_scatter_perf -b 32G  -e 32G -f 0 -i 0 -g 1
+测试结果：busbw 4小时稳定不低于765GB/s
+跨leaf
+测试条件：reduce_scatter_perf -b 32G  -e 32G -f 0 -i 0 -g 1
+测试结果：busbw 4小时稳定不低于760GB/s
+
 ```text
 /usr/bin/mpirun --bind-to none \
   --launch-agent "env LD_LIBRARY_PATH=$LD_LIBRARY_PATH /usr/bin/orted" \
