@@ -137,3 +137,14 @@ export LD_LIBRARY_PATH=/usr/local/cuda-13.1/lib64:/usr/lib/x86_64-linux-gnu/open
 ```
 
 
+| 类别 | 配置文件/位置 | 配置项 | 取值 | 说明 |
+| --- | --- | --- | --- | --- |
+| BIOS 设置 | | `P2P Order Write` | `disabled` | 禁用 PCIe P2P 写操作的严格排序，减少写事务间的顺序依赖，降低延迟 |
+| BIOS 设置 | | `ACS Enable` | `disabled` | 禁用 PCIe ACS，解除设备间的 IOMMU 隔离，使 GPU 能够直接访问彼此地址空间 |
+| BIOS 设置 | | `Re-Size Bar Support` | `enabled` | 启用 Resizable BAR，允许 CPU 一次性映射 GPU 全部显存，为 BAR1-based P2P 提供硬件基础 |
+| NCCL环境变量 | | `NCCL_MIN_NCHANNELS` | `10` | 设置 NCCL 通信的最小通道数，增加通信并行度，提升多 GPU 集体通信的吞吐量 |
+| NCCL环境变量 | | `NCCL_P2P_LEVEL` | `SYS` | 控制 NCCL P2P 通信允许的最远距离级别，设为 SYS 表示允许跨 PCIe 根复合体的系统级 P2P 通信 |
+| 驱动 | `/etc/modprobe.d/nvidia-relaxed-ordering.conf` | `options nvidia NVreg_EnablePCIERelaxedOrderingMode=1` | | 启用 PCIe Relaxed Ordering 模式，允许 TLP 事务乱序传输，提升大批量 DMA 写入的吞吐性能，非通用设置项 |
+| 驱动 | `/etc/modprobe.d/nvidia.conf` | `options nvidia NVreg_RegistryDwords="ForceP2P=0x111;RMForceP2PType=0x1;RMForceStaticBar1=0x1;RMPcieP2PType=0x1"` | | 强制启用 GPU 间 P2P 通信，指定使用 BAR1 作为 P2P 映射通道，绕过驱动默认限制，不建议生产阶段部署 |
+| 驱动 | `/etc/default/grub` | `GRUB_CMDLINE_LINUX_DEFAULT="amd_iommu=on iommu=pt"` | | 设置 IOMMU 为 Pass-Through 模式，仅做地址转换不做设备隔离，配合 ACS 禁用实现 GPU 直通访问 |
+
