@@ -1,3 +1,5 @@
+<img width="1676" height="726" alt="0e094a5197eebbe07d3b096265c2276c" src="https://github.com/user-attachments/assets/a4089246-21b0-4cc8-9d80-b14ad6d9886a" />
+
 ### all_reduce
 
 同leaf <br>
