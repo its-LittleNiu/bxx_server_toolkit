@@ -1,5 +1,21 @@
 <img width="1676" height="726" alt="0e094a5197eebbe07d3b096265c2276c" src="https://github.com/user-attachments/assets/a4089246-21b0-4cc8-9d80-b14ad6d9886a" />
 
+### 基线信息
+<img width="2251" height="630" alt="image" src="https://github.com/user-attachments/assets/0a92e9a3-5e00-413c-8106-1f8e3270fe74" />
+
+### 配置IOMMU
+重启生效
+```bash
+mkdir -p /etc/default/grub.d
+
+cat > /etc/default/grub.d/99-gpudirect-iommu.cfg <<'EOF'
+GRUB_CMDLINE_LINUX_DEFAULT="${GRUB_CMDLINE_LINUX_DEFAULT} iommu.passthrough=1"
+EOF
+
+update-grub
+
+```
+
 ### all_reduce
 
 同leaf <br>
