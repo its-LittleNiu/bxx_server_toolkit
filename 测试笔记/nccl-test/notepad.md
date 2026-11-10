@@ -9,30 +9,32 @@
 测试条件：all_reduce_perf -b 32G  -e 32G -f 0 -i 0 -g 1<br>
 测试结果：busbw 4小时稳定不低于890GB/s<br>
 
-```text
-export LD_LIBRARY_PATH=/usr/local/cuda-13.1/lib64:/usr/lib/x86_64-linux-gnu/openmpi/lib:/usr/lib/x86_64-linux-gnu
+```bash
+export MPI_HOME=/usr/mpi/gcc/openmpi-5.0.10rc2.2608140153
+export PATH="$MPI_HOME/bin:$PATH"
+export LD_LIBRARY_PATH="$MPI_HOME/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
-/usr/bin/mpirun --bind-to none \
-  --launch-agent "env LD_LIBRARY_PATH=$LD_LIBRARY_PATH /usr/bin/orted" \
+"$MPI_HOME/bin/mpirun" --allow-run-as-root --bind-to none \
+  --prefix "$MPI_HOME" \
   --mca pml ob1 \
-  --mca btl self,vader,tcp \
+  --mca btl self,sm,tcp \
   --mca btl_tcp_if_include bond4 \
-  --mca oob_tcp_if_include bond4 \
-  --mca plm_rsh_args '-o BatchMode=yes -o StrictHostKeyChecking=yes' \
+  --prtemca oob_tcp_if_include bond4 \
   -x LD_LIBRARY_PATH \
   -x NCCL_DEBUG=WARN \
   -x NCCL_ALGO=NVLSTree \
   -x NCCL_NVLS_NCHANNELS=64 \
   -x NCCL_IB_DISABLE=0 \
   -x NCCL_SOCKET_IFNAME=bond4 \
-  -x NCCL_IB_HCA=mlx5_0:1,mlx5_1:1,mlx5_12:1,mlx5_15:1,mlx5_16:1,mlx5_5:1,mlx5_6:1,mlx5_7:1 \
+  -x 'NCCL_IB_HCA==mlx5_0:1,mlx5_1:1,mlx5_5:1,mlx5_6:1,mlx5_7:1,mlx5_12:1,mlx5_15:1,mlx5_16:1' \
   -x NCCL_P2P_NET_CHUNKSIZE=2097152 \
   -x NCCL_BUFFSIZE=16777216 \
   --wdir /opt/ubuntu/nccl-tests/build \
-  -np 16 -N 8 \
-  -H 192.168.161.202:8,192.168.161.203:8 \
-  ./all_reduce_perf_mpi \
-  -b 32G -e 32G -f 2 -i 0 -g 1 \
+  -np 16 --map-by ppr:8:node \
+  -H 192.168.161.204:8,192.168.161.203:8 \
+  --wdir /opt/ubuntu/nccl-tests/build \
+  ./all_reduce_perf \
+  -b 32G -e 32G -f 2 -i 1 -g 1 \
   -w 2 -n 5 -c 1 -T 60 -R 0
 ```
 
