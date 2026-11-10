@@ -5,6 +5,7 @@
 
 ### 配置IOMMU
 重启生效
+如果IOMMU没设置，可能会造成RDMA链路效率不达标
 ```bash
 mkdir -p /etc/default/grub.d
 
@@ -14,6 +15,18 @@ EOF
 
 update-grub
 
+```
+
+### 关闭ACS
+```bash
+local bdf
+
+  for bdf in $(sudo lspci -D | awk '{print $1}'); do
+    if sudo lspci -s "$bdf" -vvv | grep -q "ACSCtl"; then
+      echo "Disable ACSCtl on $bdf"
+      sudo setpci -s "$bdf" ECAP_ACS+0x6.w=0000
+    fi
+  done
 ```
 
 ### all_reduce
