@@ -353,7 +353,33 @@ dpkg-query -W -f='${Package}\t${Version}\t${Status}\n' \
 set +u
 source /etc/profile
 set -u
-
 echo "[INFO] 第二阶段脚本已执行完成；请继续检查 GPU Fabric 并执行 CUDA/NCCL 实测"
 
+
+# =========================================================
+# 安装dcgmi
+# =========================================================
+# Install DCGM
+echo -e "\033[32m[INFO]: Install NVIDIA DCGM\033[0m"
+echo -e "\e[32m$(date +%Y-%m-%d_%H-%M-%S) Install NVIDIA DCGM------\e[0m"
+dpkg -i $DRIVER_DIR/dcgm/*.deb
+systemctl --now enable nvidia-dcgm
+
+
+############################################################
+# 配置 IOMMU
+############################################################
+mkdir -p /etc/default/grub.d
+
+cat > /etc/default/grub.d/99-gpudirect-iommu.cfg <<'EOF'
+GRUB_CMDLINE_LINUX_DEFAULT="${GRUB_CMDLINE_LINUX_DEFAULT} iommu.passthrough=1"
+EOF
+
+update-grub
+echo -e "\e[32m$(date +%Y-%m-%d_%H-%M-%S) [INFO]: IOMMU configer it·s OK \e[0m"
+
+
+echo -e "\e[32m$(date +%Y-%m-%d_%H-%M-%S) [INFO]: 8秒后reboot重启 \e[0m"
+sleep 8
+reboot
 
